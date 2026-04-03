@@ -29,7 +29,7 @@ button.click()
 
 # send keys
 
-time.sleep(2)
+driver.implicitly_wait(2)
 email = driver.find_element(By.NAME, "email")
 password = driver.find_element(By.XPATH, '//*[@id="password-input"]')
 email.send_keys(ACCOUNT_EMAIL)
