@@ -46,19 +46,40 @@ tuesday = None
 if day != "tuesday":
     for i in range(1, 8):
         next_day = today + datetime.timedelta(days=i)
-        print(next_day)
         if next_day.strftime("%A").lower() == "tuesday":
             tuesday = next_day
 else: tuesday = today # 2026-04-04
+
+
+# Counters for booked classes for the booking summary
+booked_count = 0
+waitlist_count = 0
+already_booked_count = 0
 
 # Find the class 
 driver.implicitly_wait(4)
 # class_find = driver.find_element(By.ID, f"class-time-spin-{tuesday}-1800")
 book_button =driver.find_element(By.ID, f"book-button-spin-{tuesday}-1800")
-book_button.click()
-print(f"✓ Booked: Spin Class on {tuesday.strftime("%a")}, {tuesday.strftime("%B")} {tuesday.strftime("%m")}")
+name_of_the_class = driver.find_element(By.CSS_SELECTOR, f"h3#class-name-spin-{tuesday}-1800").text
+# print(name_of_the_class)
+if book_button.text.lower() == "waitlisted":
+    waitlist_count +=1
+    print(f"✓ Already on waitlist: {name_of_the_class} on {tuesday.strftime("%a")}, {tuesday.strftime("%B")} {tuesday.strftime("%m")}")
+elif book_button.text.lower() == "booked":
+    already_booked_count+=1
+    print(f"✓ Already booked: {name_of_the_class} on {tuesday.strftime("%a")}, {tuesday.strftime("%B")} {tuesday.strftime("%m")}")
+else:
+    book_button.click()
+    booked_count+=1
+    print(f"✓ Booked: {name_of_the_class} on {tuesday.strftime("%a")}, {tuesday.strftime("%B")} {tuesday.strftime("%m")}")
 
 # book-button-spin-2026-04-07-1800
 # print(f"book-button-spin-{tuesday}-1800")
 
 
+# Print summary
+print("\n--- BOOKING SUMMARY ---")
+print(f"Classes booked: {booked_count}")
+print(f"Waitlists joined: {waitlist_count}")
+print(f"Already booked/waitlisted: {already_booked_count}")
+print(f"Total Tuesday 6pm classes processed: {booked_count + waitlist_count + already_booked_count}")
